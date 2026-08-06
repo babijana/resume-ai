@@ -1,9 +1,7 @@
-// import LandingPage from "./pages/Landing/LandingPage";
-// import DesignSystem from "./pages/DesignSystem";
-// import LoginPage from "./pages/Login/LoginPage";
-import RegisterPage from "./pages/Register/RegisterPage";
+import AppRoutes from "./routes/AppRoutes";
+
 function App() {
-  return <RegisterPage />;
+    return <AppRoutes />;
 }
 
 export default App;
