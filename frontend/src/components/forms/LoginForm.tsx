@@ -1,8 +1,51 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import Card from "../ui/Card";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 
+
+
+
 export default function LoginForm() {
+    const navigate = useNavigate();
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const handleLogin = async () => {
+    try {
+        const response = await fetch(
+            "http://localhost:8081/api/auth/login",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                }),
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error("Invalid email or password");
+        }
+
+        const data = await response.json();
+
+        localStorage.setItem("token", data.token);
+
+        alert("Login successful!");
+
+        navigate("/dashboard");
+
+    } catch (error) {
+        alert("Login failed");
+        console.error(error);
+    }
+};
     return (
         <Card className="w-full max-w-lg p-10">
 
@@ -26,6 +69,8 @@ export default function LoginForm() {
                     <Input
                         type="email"
                         placeholder="Enter your email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                     />
                 </div>
 
@@ -36,9 +81,11 @@ export default function LoginForm() {
                     </label>
 
                     <Input
-                        type="password"
-                        placeholder="Enter your password"
-                    />
+                    type="password"
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
                 </div>
                 <div className="flex items-center justify-between text-sm">
 
@@ -63,9 +110,12 @@ export default function LoginForm() {
                 </div>
 
                 {/* Login Button */}
-                <Button className="w-full">
-                    Login
-                </Button>
+                <Button
+    className="w-full"
+    onClick={handleLogin}
+>
+    Login
+</Button>
                 <p className="text-center text-sm text-gray-600">
 
     Don't have an account?
