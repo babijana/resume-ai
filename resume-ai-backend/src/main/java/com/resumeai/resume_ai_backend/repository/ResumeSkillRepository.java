@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ResumeSkillRepository
         extends JpaRepository<ResumeSkill, Long> {
+    boolean existsByResumeIdAndSkillId(Long resumeId, Long skillId);
 }

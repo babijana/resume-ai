@@ -10,4 +10,5 @@ public interface TargetRoleRepository extends JpaRepository<TargetRole, Long> {
     Optional<TargetRole> findByName(String name);
 
     boolean existsByName(String name);
+
 }
