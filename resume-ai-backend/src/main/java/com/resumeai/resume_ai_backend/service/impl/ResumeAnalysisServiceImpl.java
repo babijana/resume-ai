@@ -1,6 +1,7 @@
 package com.resumeai.resume_ai_backend.service.impl;
 
 import com.resumeai.resume_ai_backend.repository.ResumeAnalysisRepository;
+import com.resumeai.resume_ai_backend.service.interfaces.PdfTextExtractionService;
 import com.resumeai.resume_ai_backend.service.interfaces.ResumeAnalysisService;
 import org.springframework.stereotype.Service;
 import com.resumeai.resume_ai_backend.entity.Resume;
@@ -19,16 +20,20 @@ public class ResumeAnalysisServiceImpl implements ResumeAnalysisService {
     private final ResumeRepository resumeRepository;
     private final TargetRoleRepository targetRoleRepository;
     private final UserRepository userRepository;
+    private final PdfTextExtractionService pdfTextExtractionService;
+
     public ResumeAnalysisServiceImpl(
             ResumeAnalysisRepository resumeAnalysisRepository,
             ResumeRepository resumeRepository,
             TargetRoleRepository targetRoleRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            PdfTextExtractionService pdfTextExtractionService) {
 
         this.resumeAnalysisRepository = resumeAnalysisRepository;
         this.resumeRepository = resumeRepository;
         this.targetRoleRepository = targetRoleRepository;
         this.userRepository = userRepository;
+        this.pdfTextExtractionService = pdfTextExtractionService;
     }
 
     @Override
@@ -48,6 +53,20 @@ public class ResumeAnalysisServiceImpl implements ResumeAnalysisService {
                     "You are not authorized to analyze this resume"
             );
         }
+
+        String resumeText;
+
+        try {
+            resumeText = pdfTextExtractionService.extractText(
+                    resume.getFilePath()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    "Failed to extract text from resume",
+                    e
+            );
+        }
+
 
         TargetRole targetRole = targetRoleRepository.findById(targetRoleId)
                 .orElseThrow(() -> new RuntimeException("Target role not found"));
